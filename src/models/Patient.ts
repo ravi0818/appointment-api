@@ -27,6 +27,17 @@ const PatientSchema: Schema = new Schema<IPatient>(
       type: String,
       trim: true,
     },
+    age: {
+      type: Number,
+    },
+    gender: {
+      type: String,
+      enum: ["Male", "Female", "Other"],
+    },
+    address: {
+      type: String,
+      trim: true,
+    },
     contacts: {
       primaryPhone: {
         type: String,

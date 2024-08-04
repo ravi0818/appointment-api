@@ -4,7 +4,7 @@ import { Router } from "express";
 
 const router = Router();
 
-router.get("/", getPatient);
-router.post("/", updatePatient);
+router.get("/profile", getPatient);
+router.post("/profile", updatePatient);
 
 export default router;

@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 import User from "@models/User";
 import Patient from "@models/Patient";
 import logger from "../utils/logger";
+import Clinic from "@models/Clinic";
 
 const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key";
 
@@ -29,8 +30,13 @@ export const registerUser = async (req: Request, res: Response) => {
     const user = await User.create(newUser);
     logger.info("User created: %s", user._id);
 
-    await Patient.create({ userId: user._id, "contacts.email": user.email });
-    logger.info("Patient record created for user: %s", user._id);
+    if (user.role === "Clinic") {
+      await Clinic.create({ userId: user._id, "contacts.email": user.email });
+      logger.info("Clinic record created for user: %s", user._id);
+    } else {
+      await Patient.create({ userId: user._id, "contacts.email": user.email });
+      logger.info("Patient record created for user: %s", user._id);
+    }
 
     res.status(201).json({ message: "User registered successfully" });
   } catch (error) {
@@ -57,9 +63,13 @@ export const loginUser = async (req: Request, res: Response) => {
       return res.status(400).json({ message: "Invalid email or password" });
     }
 
-    const token = jwt.sign({ id: user._id, role: user.role }, JWT_SECRET, {
-      expiresIn: "1h",
-    });
+    const token = jwt.sign(
+      { id: user._id, email: user.email, role: user.role },
+      JWT_SECRET,
+      {
+        expiresIn: "8h",
+      }
+    );
     logger.info("JWT token generated for user: %s", user._id);
 
     res.json({ token });
