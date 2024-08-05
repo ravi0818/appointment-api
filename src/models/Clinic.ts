@@ -1,4 +1,4 @@
-import mongoose, { Document, Schema } from "mongoose";
+import mongoose, { Document, Schema } from 'mongoose';
 
 interface IClinic extends Document {
   userId: mongoose.Types.ObjectId;
@@ -9,6 +9,7 @@ interface IClinic extends Document {
     alternativePhone?: string;
     email: string;
   };
+  profilePicture?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -17,7 +18,7 @@ const ClinicSchema: Schema = new Schema<IClinic>(
   {
     userId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      ref: 'User',
       required: true,
     },
     name: {
@@ -43,6 +44,10 @@ const ClinicSchema: Schema = new Schema<IClinic>(
         trim: true,
       },
     },
+    profilePicture: {
+      type: String,
+      trim: true,
+    },
     createdAt: {
       type: Date,
       default: Date.now,
@@ -57,4 +62,4 @@ const ClinicSchema: Schema = new Schema<IClinic>(
   }
 );
 
-export default mongoose.model<IClinic>("Clinic", ClinicSchema);
+export default mongoose.model<IClinic>('Clinic', ClinicSchema);

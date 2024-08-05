@@ -1,5 +1,5 @@
-import mongoose, { Document, Schema } from "mongoose";
-import bcrypt from "bcrypt";
+import bcrypt from 'bcrypt';
+import mongoose, { Document, Schema } from 'mongoose';
 
 interface IUser extends Document {
   email: string;
@@ -26,8 +26,8 @@ const UserSchema: Schema = new Schema<IUser>(
     role: {
       type: String,
       required: true,
-      enum: ["Patient", "Clinic"],
-      default: "Patient",
+      enum: ['Patient', 'Clinic'],
+      default: 'Patient',
     },
     createdAt: {
       type: Date,
@@ -43,4 +43,4 @@ const UserSchema: Schema = new Schema<IUser>(
   }
 );
 
-export default mongoose.model<IUser>("User", UserSchema);
+export default mongoose.model<IUser>('User', UserSchema);

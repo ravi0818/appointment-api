@@ -4,10 +4,7 @@
     "module": "commonjs",
     "baseUrl": "./src",
     "paths": {
-      "@models/*": ["models/*"],
-      "@controllers/*": ["controllers/*"],
-      "@routes/*": ["routes/*"],
-      "@middlewares/*": ["middlewares/*"]
+      "@*": ["./*"]
     },
     "outDir": "./dist",
     "esModuleInterop": true,
