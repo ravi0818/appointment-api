@@ -1,4 +1,4 @@
-import mongoose, { Document, Schema } from "mongoose";
+import mongoose, { Document, Schema } from 'mongoose';
 
 interface IPatient extends Document {
   userId: mongoose.Types.ObjectId;
@@ -20,7 +20,7 @@ const PatientSchema: Schema = new Schema<IPatient>(
   {
     userId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      ref: 'User',
       required: true,
     },
     name: {
@@ -32,7 +32,7 @@ const PatientSchema: Schema = new Schema<IPatient>(
     },
     gender: {
       type: String,
-      enum: ["Male", "Female", "Other"],
+      enum: ['Male', 'Female', 'Other'],
     },
     address: {
       type: String,
@@ -71,4 +71,4 @@ const PatientSchema: Schema = new Schema<IPatient>(
   }
 );
 
-export default mongoose.model<IPatient>("Patient", PatientSchema);
+export default mongoose.model<IPatient>('Patient', PatientSchema);

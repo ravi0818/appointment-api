@@ -1,8 +1,11 @@
-import express, { Request, Response } from "express";
-import mongoose from "mongoose";
-import { dbConfig } from "./config/dbConfig";
-import routes from "./routes";
-import cors from "cors";
+import express, { Request, Response } from 'express';
+
+import cors from 'cors';
+import mongoose from 'mongoose';
+
+import { dbConfig } from './config/dbConfig';
+import routes from './routes';
+
 declare global {
   namespace Express {
     interface Request {
@@ -21,15 +24,15 @@ app.use(cors());
 
 mongoose
   .connect(dbConfig.uri)
-  .then(() => console.log("MongoDB connected"))
-  .catch((err) => console.error("MongoDB connection error:", err));
+  .then(() => console.log('MongoDB connected'))
+  .catch((err) => console.error('MongoDB connection error:', err));
 
 // Define a basic route
-app.get("/", (req: Request, res: Response) => {
-  res.send("Hello, TypeScript with Express!");
+app.get('/', (req: Request, res: Response) => {
+  res.send('Hello, TypeScript with Express!');
 });
 
-app.use("/api", routes);
+app.use('/api', routes);
 
 // Start the server
 app.listen(port, () => {

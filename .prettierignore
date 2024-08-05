@@ -1,0 +1,24 @@
+# Ignore node_modules directory
+node_modules/
+
+# Ignore build or distribution directories
+dist/
+build/
+
+# Ignore log files
+*.log
+
+# Ignore environment files
+.env
+*.env
+
+# Ignore configuration files (if not needed)
+*.config.js
+*.config.json
+
+# Ignore test coverage directory
+coverage/
+
+# Ignore files with specific extensions (e.g., JSON, Markdown)
+*.json
+*.md

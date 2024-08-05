@@ -1,10 +1,10 @@
 import { Request, Response } from 'express';
 
-import Patient from '@models/Patient';
-import logger from '@utils/logger';
+import Patient from '../models/Patient';
+import logger from '../utils/logger';
 
-export const getPatient = async (req: Request, res: Response) => {
-  logger.info('getPatient called');
+export const getClinic = async (req: Request, res: Response) => {
+  logger.info('getClinic called');
   logger.info('Request userId: %s', req.userId);
 
   try {
@@ -12,8 +12,6 @@ export const getPatient = async (req: Request, res: Response) => {
       _id: 0,
       name: 1,
       contacts: 1,
-      age: 1,
-      gender: 1,
       address: 1,
       profilePicture: 1,
     };
@@ -32,9 +30,9 @@ export const getPatient = async (req: Request, res: Response) => {
   }
 };
 
-export const updatePatient = async (req: Request, res: Response) => {
+export const updateClinic = async (req: Request, res: Response) => {
   const { name, contacts, profilePicture, age, gender, address } = req.body;
-  logger.info('updatePatient called');
+  logger.info('updateClinic called');
   logger.info('Request userId: %s', req.userId);
   logger.info('Request body: %o', req.body);
 
