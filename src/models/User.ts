@@ -5,6 +5,7 @@ interface IUser extends Document {
   email: string;
   password: string;
   role: string;
+  pushToken?: string;
   createdAt: Date;
   updatedAt: Date;
   comparePassword(password: string): Promise<boolean>;
@@ -28,6 +29,10 @@ const UserSchema: Schema = new Schema<IUser>(
       required: true,
       enum: ['Patient', 'Clinic'],
       default: 'Patient',
+    },
+    pushToken: {
+      type: String,
+      trim: true,
     },
     createdAt: {
       type: Date,
