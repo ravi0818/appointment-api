@@ -49,6 +49,7 @@ export const updatePatient = async (req: Request, res: Response) => {
         ...patient?.contacts,
         ...contacts,
       },
+      profilePicture,
     };
     await Patient.findOneAndUpdate({ userId: req.userId }, updatedPatient, {
       new: true,
