@@ -20,7 +20,7 @@ export const savePushToken = async (req: Request, res: Response) => {
     });
 
     logger.info('Updated user: %o', updatedUser);
-    res.json({ message: 'Push token saved successfully' });
+    res.json({ message: 'Push token saved successfully', status: 200 });
   } catch (error) {
     logger.error('Error updating user: %o', error);
     res.status(500).json({ message: 'Server error', error });
