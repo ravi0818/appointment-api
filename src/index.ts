@@ -3,6 +3,8 @@ import express, { Request, Response } from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
 
+import '@services/cronJobService';
+
 import { dbConfig } from './config/dbConfig';
 import routes from './routes';
 

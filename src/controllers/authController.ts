@@ -11,7 +11,7 @@ import logger from '@utils/logger';
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 
 export const registerUser = async (req: Request, res: Response) => {
-  const { email, password, role } = req.body;
+  const { email, password, role, pushToken } = req.body;
 
   logger.info('Registering user: %s', email);
 
@@ -27,6 +27,7 @@ export const registerUser = async (req: Request, res: Response) => {
       email,
       password: hashedPassword,
       role,
+      pushToken,
     };
 
     const user = await User.create(newUser);
@@ -65,9 +66,13 @@ export const loginUser = async (req: Request, res: Response) => {
       return res.status(400).json({ message: 'Invalid email or password' });
     }
 
-    const token = jwt.sign({ id: user._id, email: user.email, role: user.role }, JWT_SECRET, {
-      expiresIn: '8h',
-    });
+    const token = jwt.sign(
+      { id: user._id, email: user.email, role: user.role, pushToken: user.pushToken },
+      JWT_SECRET,
+      {
+        expiresIn: '8h',
+      }
+    );
     logger.info('JWT token generated for user: %s', user._id);
 
     res.json({ token });

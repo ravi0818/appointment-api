@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 
-import Patient from '../models/Patient';
+import Clinic from '../models/Clinic';
 import logger from '../utils/logger';
 
 export const getClinic = async (req: Request, res: Response) => {
@@ -15,47 +15,46 @@ export const getClinic = async (req: Request, res: Response) => {
       address: 1,
       profilePicture: 1,
     };
-    const patient = await Patient.findOne({ userId: req.userId }, projection);
-    logger.info('Patient found: %o', patient);
+    const clinic = await Clinic.findOne({ userId: req.userId }, projection);
+    logger.info('Clinic found: %o', clinic);
 
-    if (!patient) {
-      logger.warn('Patient not found for userId: %s', req.userId);
-      return res.status(404).json({ message: 'Patient not found' });
+    if (!clinic) {
+      logger.warn('Clinic not found for userId: %s', req.userId);
+      return res.status(404).json({ message: 'Clinic not found' });
     }
 
-    res.json(patient);
+    res.json(clinic);
   } catch (error) {
-    logger.error('Error fetching patient: %o', error);
+    logger.error('Error fetching clinic: %o', error);
     res.status(500).json({ message: 'Server error', error });
   }
 };
 
 export const updateClinic = async (req: Request, res: Response) => {
-  const { name, contacts, profilePicture, age, gender, address } = req.body;
+  const { name, contacts, profilePicture, address } = req.body;
   logger.info('updateClinic called');
   logger.info('Request userId: %s', req.userId);
   logger.info('Request body: %o', req.body);
 
   try {
-    const patient = await Patient.findOne({ userId: req.userId });
-    const updatedPatient = {
+    const clinic = await Clinic.findOne({ userId: req.userId });
+    const updatedClinic = {
       name,
-      age,
-      gender,
       address,
       contacts: {
-        ...patient?.contacts,
+        ...clinic?.contacts,
         ...contacts,
       },
+      profilePicture,
     };
-    await Patient.findOneAndUpdate({ userId: req.userId }, updatedPatient, {
+    await Clinic.findOneAndUpdate({ userId: req.userId }, updatedClinic, {
       new: true,
     });
 
-    logger.info('Updated patient: %o', updatedPatient);
+    logger.info('Updated clinic: %o', updatedClinic);
     res.json({ message: 'Profile updated successfully' });
   } catch (error) {
-    logger.error('Error updating patient: %o', error);
+    logger.error('Error updating clinic: %o', error);
     res.status(500).json({ message: 'Server error', error });
   }
 };
