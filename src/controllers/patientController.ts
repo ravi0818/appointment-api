@@ -2,10 +2,11 @@ import { Request, Response } from 'express';
 
 import Patient from '@models/Patient';
 import logger from '@utils/logger';
+import { handleError, handleSuccess } from '@utils/responseHelper';
 
 export const getPatient = async (req: Request, res: Response) => {
-  logger.info('getPatient called');
-  logger.info('Request userId: %s', req.userId);
+  const userId = req.userId as string;
+  logger.info('getPatient called for userId: %s', userId);
 
   try {
     const projection = {
@@ -17,48 +18,55 @@ export const getPatient = async (req: Request, res: Response) => {
       address: 1,
       profilePicture: 1,
     };
-    const patient = await Patient.findOne({ userId: req.userId }, projection);
-    logger.info('Patient found: %o', patient);
+
+    const patient = await Patient.findOne({ userId }, projection);
 
     if (!patient) {
-      logger.warn('Patient not found for userId: %s', req.userId);
-      return res.status(404).json({ message: 'Patient not found' });
+      logger.warn('Patient not found for userId: %s', userId);
+      return handleError(res, 'Patient not found', 404);
     }
 
-    res.json(patient);
-  } catch (error) {
+    return handleSuccess(res, 'Patient details fetched successfully', 200, patient);
+  } catch (error: unknown) {
     logger.error('Error fetching patient: %o', error);
-    res.status(500).json({ message: 'Server error', error });
+    return handleError(res, 'Server error', 500, error);
   }
 };
 
 export const updatePatient = async (req: Request, res: Response) => {
   const { name, contacts, profilePicture, age, gender, address } = req.body;
-  logger.info('updatePatient called');
-  logger.info('Request userId: %s', req.userId);
-  logger.info('Request body: %o', req.body);
+  const userId = req.userId as string;
+  logger.info('updatePatient called for userId: %s', userId);
 
   try {
-    const patient = await Patient.findOne({ userId: req.userId });
+    const patient = await Patient.findOne({ userId });
+
+    if (!patient) {
+      logger.warn('Patient not found for userId: %s', userId);
+      return handleError(res, 'Patient not found', 404);
+    }
+
     const updatedPatient = {
       name,
       age,
       gender,
       address,
       contacts: {
-        ...patient?.contacts,
+        ...patient.contacts,
         ...contacts,
       },
       profilePicture,
     };
-    await Patient.findOneAndUpdate({ userId: req.userId }, updatedPatient, {
-      new: true,
-    });
 
-    logger.info('Updated patient: %o', updatedPatient);
-    res.json({ message: 'Profile updated successfully' });
-  } catch (error) {
+    const result = await Patient.findOneAndUpdate({ userId }, updatedPatient, { new: true });
+
+    if (!result) {
+      return handleError(res, 'Failed to update patient', 500);
+    }
+
+    return handleSuccess(res, 'Profile updated successfully', 200, result);
+  } catch (error: unknown) {
     logger.error('Error updating patient: %o', error);
-    res.status(500).json({ message: 'Server error', error });
+    return handleError(res, 'Server error', 500, error);
   }
 };
