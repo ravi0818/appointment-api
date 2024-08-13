@@ -2,10 +2,12 @@ import { Request, Response } from 'express';
 
 import Clinic from '../models/Clinic';
 import logger from '../utils/logger';
+import { handleError, handleSuccess } from '../utils/responseHelper';
 
 export const getClinic = async (req: Request, res: Response) => {
-  logger.info('getClinic called');
-  logger.info('Request userId: %s', req.userId);
+  const userId = req.userId as string;
+
+  logger.info('getClinic called for userId: %s', userId);
 
   try {
     const projection = {
@@ -15,46 +17,54 @@ export const getClinic = async (req: Request, res: Response) => {
       address: 1,
       profilePicture: 1,
     };
-    const clinic = await Clinic.findOne({ userId: req.userId }, projection);
-    logger.info('Clinic found: %o', clinic);
+
+    const clinic = await Clinic.findOne({ userId }, projection);
 
     if (!clinic) {
-      logger.warn('Clinic not found for userId: %s', req.userId);
-      return res.status(404).json({ message: 'Clinic not found' });
+      logger.warn('Clinic not found for userId: %s', userId);
+      return handleError(res, 'Clinic not found', 404);
     }
 
-    res.json(clinic);
-  } catch (error) {
+    return handleSuccess(res, 'Clinic details fetched successfully', 200, clinic);
+  } catch (error: unknown) {
     logger.error('Error fetching clinic: %o', error);
-    res.status(500).json({ message: 'Server error', error });
+    return handleError(res, 'Server error', 500, error);
   }
 };
 
 export const updateClinic = async (req: Request, res: Response) => {
+  const userId = req.userId as string;
   const { name, contacts, profilePicture, address } = req.body;
-  logger.info('updateClinic called');
-  logger.info('Request userId: %s', req.userId);
-  logger.info('Request body: %o', req.body);
+
+  logger.info('updateClinic called for userId: %s', userId);
 
   try {
-    const clinic = await Clinic.findOne({ userId: req.userId });
+    const clinic = await Clinic.findOne({ userId });
+
+    if (!clinic) {
+      logger.warn('Clinic not found for userId: %s', userId);
+      return handleError(res, 'Clinic not found', 404);
+    }
+
     const updatedClinic = {
       name,
       address,
       contacts: {
-        ...clinic?.contacts,
+        ...clinic.contacts,
         ...contacts,
       },
       profilePicture,
     };
-    await Clinic.findOneAndUpdate({ userId: req.userId }, updatedClinic, {
-      new: true,
-    });
 
-    logger.info('Updated clinic: %o', updatedClinic);
-    res.json({ message: 'Profile updated successfully' });
-  } catch (error) {
+    const result = await Clinic.findOneAndUpdate({ userId }, updatedClinic, { new: true });
+
+    if (!result) {
+      return handleError(res, 'Failed to update clinic', 500);
+    }
+
+    return handleSuccess(res, 'Clinic profile updated successfully', 200, result);
+  } catch (error: unknown) {
     logger.error('Error updating clinic: %o', error);
-    res.status(500).json({ message: 'Server error', error });
+    return handleError(res, 'Server error', 500, error);
   }
 };
