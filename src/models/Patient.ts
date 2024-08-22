@@ -4,22 +4,20 @@ interface IPatient extends Document {
   userId: mongoose.Types.ObjectId;
   name?: string;
   age?: number;
-  gender?: string;
+  gender?: 'Male' | 'Female' | 'Other';
   address?: string;
   contacts: {
     primaryPhone?: string;
-    alternativePhone?: string; // Optional field for an alternative phone number
+    alternativePhone?: string;
     email: string;
   };
   profilePicture?: string;
-  createdAt: Date;
-  updatedAt: Date;
 }
 
-const PatientSchema: Schema = new Schema<IPatient>(
+const PatientSchema: Schema<IPatient> = new Schema<IPatient>(
   {
     userId: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: 'User',
       required: true,
     },
@@ -51,19 +49,12 @@ const PatientSchema: Schema = new Schema<IPatient>(
         type: String,
         required: true,
         trim: true,
+        match: [/.+@.+\..+/, 'Please enter a valid email address'],
       },
     },
     profilePicture: {
       type: String,
       trim: true,
-    },
-    createdAt: {
-      type: Date,
-      default: Date.now,
-    },
-    updatedAt: {
-      type: Date,
-      default: Date.now,
     },
   },
   {
