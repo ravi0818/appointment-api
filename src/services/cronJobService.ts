@@ -15,8 +15,8 @@ const notifyUsers = async () => {
       if (pushToken) {
         const response = await sendPushNotification(
           pushToken,
-          'Scheduled Notification',
-          `Hello, this is a scheduled notification.`,
+          'Daily Health Tip',
+          `Tip of the day: Drink plenty of water to stay hydrated. Remember to schedule regular check-ups!`,
           {
             userId: user._id,
           }
@@ -31,7 +31,7 @@ const notifyUsers = async () => {
 };
 
 // Schedule the cron job to run at a specified time
-cron.schedule('30 * * * *', async () => {
+cron.schedule('0 * * * *', async () => {
   console.log('Running daily notification job');
   await notifyUsers();
 });

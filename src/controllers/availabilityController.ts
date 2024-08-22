@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 
+import Appointment from '@models/Appointment';
 import Availability from '@models/Availability';
 import logger from '@utils/logger';
 import { handleError, handleSuccess } from '@utils/responseHelper';
@@ -81,5 +82,37 @@ export const deleteAvailability = async (req: Request, res: Response) => {
   } catch (error: unknown) {
     logger.error('Error deleting availability: %o', error);
     return handleError(res, 'Error deleting availability', 500, error);
+  }
+};
+
+export const getRemainingSlots = async (req: Request, res: Response) => {
+  const { availabilityId, date } = req.query;
+  logger.info('getRemainingSlots called');
+
+  try {
+    // Find the availability slot by ID
+    const slot = await Availability.findById(availabilityId);
+    if (!slot) {
+      return handleError(res, 'Availability slot not found', 404);
+    }
+
+    // Count the number of booked appointments for the given availability and date
+    const bookedAppointmentsCount = await Appointment.countDocuments({
+      availabilityId,
+      date,
+      status: 'booked',
+    });
+
+    // Calculate the remaining slots
+    const remainingSlots = slot.maxAppointments - bookedAppointmentsCount;
+
+    logger.info('Remaining slots: %d', remainingSlots);
+    return handleSuccess(res, 'Remaining slots retrieved successfully', 200, {
+      totalSlots: slot.maxAppointments,
+      remainingSlots,
+    });
+  } catch (error: unknown) {
+    logger.error('Error retrieving remaining slots: %o', error);
+    return handleError(res, 'Server error', 500, error);
   }
 };

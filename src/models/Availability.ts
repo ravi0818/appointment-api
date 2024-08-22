@@ -1,14 +1,14 @@
-import mongoose, { Document, Schema, Model, model } from 'mongoose';
+import mongoose, { Document, Schema } from 'mongoose';
 
 interface IAvailability extends Document {
   doctorId: mongoose.Types.ObjectId;
-  day: string; // e.g., "Monday"
-  startTime: string; // e.g., "09:00 AM"
-  endTime: string; // e.g., "10:00 AM"
-  maxAppointments: number; // Maximum appointments allowed for this slot
+  day: string;
+  startTime: string;
+  endTime: string;
+  maxAppointments: number;
 }
 
-const availabilitySchema: Schema<IAvailability> = new Schema(
+const AvailabilitySchema: Schema<IAvailability> = new Schema<IAvailability>(
   {
     doctorId: {
       type: Schema.Types.ObjectId,
@@ -38,6 +38,4 @@ const availabilitySchema: Schema<IAvailability> = new Schema(
   }
 );
 
-const Availability: Model<IAvailability> = model<IAvailability>('Availability', availabilitySchema);
-
-export default Availability;
+export default mongoose.model<IAvailability>('Availability', AvailabilitySchema);

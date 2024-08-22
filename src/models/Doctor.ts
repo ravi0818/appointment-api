@@ -1,14 +1,14 @@
-import mongoose, { Document, Schema, Model, model } from 'mongoose';
+import mongoose, { Document, Schema } from 'mongoose';
 
 interface IDoctor extends Document {
   userId: mongoose.Types.ObjectId;
   name: string;
-  gender: string;
+  gender: 'Male' | 'Female' | 'Other';
   description: string;
   specialization: string;
 }
 
-const doctorSchema: Schema<IDoctor> = new Schema(
+const DoctorSchema: Schema<IDoctor> = new Schema<IDoctor>(
   {
     userId: {
       type: Schema.Types.ObjectId,
@@ -37,6 +37,4 @@ const doctorSchema: Schema<IDoctor> = new Schema(
   }
 );
 
-const Doctor: Model<IDoctor> = model<IDoctor>('Doctor', doctorSchema);
-
-export default Doctor;
+export default mongoose.model<IDoctor>('Doctor', DoctorSchema);

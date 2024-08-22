@@ -1,14 +1,14 @@
-import mongoose, { Document, Schema, Model, model } from 'mongoose';
+import mongoose, { Document, Schema } from 'mongoose';
 
 interface IAppointment extends Document {
   doctorId: mongoose.Types.ObjectId;
   userId: mongoose.Types.ObjectId;
   availabilityId: mongoose.Types.ObjectId;
-  date: Date; // Specific date for the appointment
-  status: string; // e.g., "booked", "cancelled", "completed"
+  date: Date;
+  status: 'booked' | 'cancelled' | 'completed';
 }
 
-const appointmentSchema: Schema<IAppointment> = new Schema(
+const AppointmentSchema: Schema<IAppointment> = new Schema<IAppointment>(
   {
     doctorId: {
       type: Schema.Types.ObjectId,
@@ -40,6 +40,4 @@ const appointmentSchema: Schema<IAppointment> = new Schema(
   }
 );
 
-const Appointment: Model<IAppointment> = model<IAppointment>('Appointment', appointmentSchema);
-
-export default Appointment;
+export default mongoose.model<IAppointment>('Appointment', AppointmentSchema);

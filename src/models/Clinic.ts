@@ -10,14 +10,12 @@ interface IClinic extends Document {
     email: string;
   };
   profilePicture?: string;
-  createdAt: Date;
-  updatedAt: Date;
 }
 
-const ClinicSchema: Schema = new Schema<IClinic>(
+const ClinicSchema: Schema<IClinic> = new Schema<IClinic>(
   {
     userId: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: 'User',
       required: true,
     },
@@ -42,19 +40,12 @@ const ClinicSchema: Schema = new Schema<IClinic>(
         type: String,
         required: true,
         trim: true,
+        match: [/.+@.+\..+/, 'Please enter a valid email address'],
       },
     },
     profilePicture: {
       type: String,
       trim: true,
-    },
-    createdAt: {
-      type: Date,
-      default: Date.now,
-    },
-    updatedAt: {
-      type: Date,
-      default: Date.now,
     },
   },
   {
