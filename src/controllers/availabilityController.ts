@@ -86,10 +86,18 @@ export const deleteAvailability = async (req: Request, res: Response) => {
 };
 
 export const getRemainingSlots = async (req: Request, res: Response) => {
-  const { availabilityId, date } = req.query;
+  const { availabilityId, date: dateString } = req.query;
   logger.info('getRemainingSlots called');
 
   try {
+    const [day, month, year] = (dateString as string).split('-');
+    const date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+
+    // Check if the date is valid
+    if (isNaN(date.getTime())) {
+      return handleError(res, 'Invalid date format', 400);
+    }
+
     // Find the availability slot by ID
     const slot = await Availability.findById(availabilityId);
     if (!slot) {
